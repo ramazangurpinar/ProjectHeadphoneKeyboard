@@ -12,10 +12,10 @@ The idea is to see how the candidate works:
 
 So think how to leave the solution ready for the tasks:
 - Reorganize the solution (if you think it's necessary) to improve the scalability and maintainability.
+- Currently the source of data is a json file (data/headphones.json), we want a database instead, so make the necessary things to convert that info to a database (SQL or NOSQL, whatever you prefer) and use the ORM you prefer
+- Add Create, Update and Delete endpoints for Headphones
 - Add new entity called "Keyboard" with properties: "Name", "Description", "Price", "ImageFileName", "Wireless", "Weight", "IsMechanical"
   - It shares some properties with existing "Headphones", what should we do?
-- Currently the source of data is a json file (data/headphones.json), we want a database instead, so make the necessary things to convert that info to a database (SQL or NOSQL, whatever you prefer) and use the ORM you prefer
-- Add Create, Update and Delete endpoints for HEadphones
 - Add CRUD endpoints for Keyboard
 
 This is to see how you think and code, you can do whatever you like (check other projects, google, AI, whatever). 
