@@ -1,7 +1,10 @@
+using Demo.Core.Api.Middlewares;
 using Demo.Core.Application.Interfaces;
+using Demo.Core.Application.Validators;
 using Demo.Core.Infrastructure.Persistence;
 using Demo.Core.Infrastructure.Services;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +25,7 @@ builder.Services.AddScoped<IHeadphoneService, HeadphoneService>();
 builder.Services.AddScoped<IKeyboardService, KeyboardService>();
 builder.Services.AddValidatorsFromAssemblyContaining<HeadphoneCreateDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<KeyboardCreateDtoValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
@@ -34,5 +38,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 app.Run();
