@@ -1,6 +1,7 @@
 using Demo.Core.Application.Interfaces;
 using Demo.Core.Infrastructure.Persistence;
 using Demo.Core.Infrastructure.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IHeadphoneService, HeadphoneService>();
 // Register the KeyboardService
 builder.Services.AddScoped<IKeyboardService, KeyboardService>();
+builder.Services.AddValidatorsFromAssemblyContaining<HeadphoneCreateDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<KeyboardCreateDtoValidator>();
 
 var app = builder.Build();
 
