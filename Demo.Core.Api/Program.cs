@@ -15,7 +15,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register the HeadphoneService
 builder.Services.AddScoped<IHeadphoneService, HeadphoneService>();
+// Register the KeyboardService
+builder.Services.AddScoped<IKeyboardService, KeyboardService>();
 
 var app = builder.Build();
 
