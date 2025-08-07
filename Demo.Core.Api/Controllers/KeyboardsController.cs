@@ -4,64 +4,39 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Core.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class KeyboardsController : ControllerBase
+    public class KeyboardsController : BaseProductController<IKeyboardService, KeyboardCreateDto, KeyboardUpdateDto, KeyboardDto>
     {
-        private readonly IKeyboardService _keyboardService;
+        public KeyboardsController(IKeyboardService service) : base(service) { }
 
-        public KeyboardsController(IKeyboardService keyboardService)
+        public override async Task<IActionResult> GetAll()
         {
-            _keyboardService = keyboardService;
+            var items = await _service.GetAllAsync();
+            return Ok(items);
         }
 
-        // GET: api/keyboards
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public override async Task<IActionResult> GetById(int id)
         {
-            var keyboards = await _keyboardService.GetAllAsync();
-            return Ok(keyboards);
+            var item = await _service.GetByIdAsync(id);
+            return item == null ? NotFound() : Ok(item);
         }
 
-        // GET: api/keyboards/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public override async Task<IActionResult> Create([FromBody] KeyboardCreateDto dto)
         {
-            var keyboard = await _keyboardService.GetByIdAsync(id);
-            if (keyboard == null)
-                return NotFound();
-
-            return Ok(keyboard);
-        }
-
-        // POST: api/keyboards
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] KeyboardCreateDto dto)
-        {
-            var id = await _keyboardService.CreateAsync(dto);
+            var id = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id }, dto);
         }
 
-        // PUT: api/keyboards/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] KeyboardUpdateDto dto)
+        public override async Task<IActionResult> Update(int id, [FromBody] KeyboardUpdateDto dto)
         {
-            var updated = await _keyboardService.UpdateAsync(id, dto);
-            if (!updated)
-                return NotFound();
-
-            return NoContent();
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated ? NoContent() : NotFound();
         }
 
-        // DELETE: api/keyboards/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public override async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _keyboardService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
-
-            return NoContent();
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
         }
     }
+
 }

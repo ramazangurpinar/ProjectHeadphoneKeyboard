@@ -4,64 +4,38 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Core.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class HeadphonesController : ControllerBase
+    public class HeadphonesController : BaseProductController<IHeadphoneService, HeadphoneCreateDto, HeadphoneUpdateDto, HeadphoneDto>
     {
-        private readonly IHeadphoneService _headphoneService;
+        public HeadphonesController(IHeadphoneService service) : base(service) { }
 
-        public HeadphonesController(IHeadphoneService headphoneService)
+        public override async Task<IActionResult> GetAll()
         {
-            _headphoneService = headphoneService;
+            var items = await _service.GetAllAsync();
+            return Ok(items);
         }
 
-        // GET: api/headphones
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public override async Task<IActionResult> GetById(int id)
         {
-            var headphones = await _headphoneService.GetAllAsync();
-            return Ok(headphones);
+            var item = await _service.GetByIdAsync(id);
+            return item == null ? NotFound() : Ok(item);
         }
 
-        // GET: api/headphones/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public override async Task<IActionResult> Create([FromBody] HeadphoneCreateDto dto)
         {
-            var headphone = await _headphoneService.GetByIdAsync(id);
-            if (headphone == null)
-                return NotFound();
-
-            return Ok(headphone);
-        }
-
-        // POST: api/headphones
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] HeadphoneCreateDto dto)
-        {
-            var id = await _headphoneService.CreateAsync(dto);
+            var id = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id }, dto);
         }
 
-        // PUT: api/headphones/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] HeadphoneUpdateDto dto)
+        public override async Task<IActionResult> Update(int id, [FromBody] HeadphoneUpdateDto dto)
         {
-            var updated = await _headphoneService.UpdateAsync(id, dto);
-            if (!updated)
-                return NotFound();
-
-            return NoContent();
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated ? NoContent() : NotFound();
         }
 
-        // DELETE: api/headphones/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public override async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _headphoneService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
-
-            return NoContent();
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
         }
     }
 }
