@@ -19,7 +19,7 @@ namespace Demo.Core.Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Product>()
-                .HasDiscriminator<string>("ProductType")
+                .HasDiscriminator<string>(nameof(Product.ProductType))
                 .HasValue<Headphone>("Headphone")
                 .HasValue<Keyboard>("Keyboard");
         }
